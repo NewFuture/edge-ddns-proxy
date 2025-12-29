@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .box { fill: #4A90E2; stroke: #2E5C8A; stroke-width: 2; }
+      .text { fill: white; font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .arrow { stroke: #E74C3C; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .arrow-label { fill: #E74C3C; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#E74C3C" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" style="fill: #333; font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-anchor: middle;">
+    edge-ddns-proxy Architecture
+  </text>
+  
+  <!-- Router/Modem Box -->
+  <rect x="50" y="150" width="150" height="100" rx="10" class="box"/>
+  <text x="125" y="190" class="text">Router / ONT</text>
+  <text x="125" y="210" class="text">光猫/路由器</text>
+  <text x="125" y="230" style="fill: white; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">DDNS Client</text>
+  
+  <!-- Arrow 1: Router to Proxy -->
+  <path d="M 200 200 L 300 200" class="arrow"/>
+  <text x="250" y="190" class="arrow-label">Traditional DDNS</text>
+  <text x="250" y="220" class="arrow-label" style="font-size: 10px;">DynDNS/no-ip/EasyDNS</text>
+  
+  <!-- Edge Proxy Box -->
+  <rect x="300" y="150" width="150" height="100" rx="10" class="box"/>
+  <text x="375" y="190" class="text">edge-ddns-proxy</text>
+  <text x="375" y="210" class="text" style="font-size: 12px;">边缘函数服务</text>
+  <text x="375" y="230" style="fill: white; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">Protocol Bridge</text>
+  
+  <!-- Arrow 2: Proxy to DNS -->
+  <path d="M 450 200 L 550 200" class="arrow"/>
+  <text x="500" y="190" class="arrow-label">Modern API</text>
+  <text x="500" y="220" class="arrow-label" style="font-size: 10px;">REST/GraphQL</text>
+  
+  <!-- DNS Providers Box -->
+  <rect x="550" y="120" width="200" height="160" rx="10" class="box"/>
+  <text x="650" y="145" class="text">DNS Providers</text>
+  <text x="650" y="165" class="text" style="font-size: 12px;">DNS 服务商</text>
+  <line x1="560" y1="175" x2="740" y2="175" stroke="white" stroke-width="1"/>
+  <text x="650" y="195" style="fill: white; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle;">✓ Cloudflare</text>
+  <text x="650" y="215" style="fill: white; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle;">✓ Alibaba Cloud DNS</text>
+  <text x="650" y="235" style="fill: white; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle;">✓ Tencent Cloud DNS</text>
+  <text x="650" y="255" style="fill: white; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle;">✓ Others</text>
+  
+  <!-- Supported Protocols Box -->
+  <rect x="50" y="280" width="350" height="100" rx="10" style="fill: #95E1D3; stroke: #5AA897; stroke-width: 2;"/>
+  <text x="225" y="305" style="fill: #333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle;">
+    Supported Protocols 支持的协议
+  </text>
+  <text x="225" y="330" style="fill: #333; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">
+    ✅ DynDNS  ✅ no-ip  ✅ EasyDNS  ✅ qdns
+  </text>
+  <text x="225" y="350" style="fill: #333; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">
+    ⚠️ oray (花生壳) - Partial Support
+  </text>
+  
+  <!-- Platform Info Box -->
+  <rect x="450" y="280" width="300" height="100" rx="10" style="fill: #F8B195; stroke: #C67D5F; stroke-width: 2;"/>
+  <text x="600" y="305" style="fill: #333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle;">
+    Edge Computing Platforms
+  </text>
+  <text x="600" y="330" style="fill: #333; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">
+    Alibaba Cloud 阿里云
+  </text>
+  <text x="600" y="350" style="fill: #333; font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle;">
+    Tencent Cloud 腾讯云 | Cloudflare
+  </text>
+  
+  <!-- Footer -->
+  <text x="400" y="395" style="fill: #666; font-family: Arial, sans-serif; font-size: 10px; text-anchor: middle;">
+    edge-ddns-proxy: Bridge traditional DDNS to modern DNS providers
+  </text>
+</svg>
