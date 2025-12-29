@@ -18,10 +18,6 @@ test('handles nested subdomains with multi-level TLD', () => {
     assert.deepEqual(splitDomain('test.www.example.co.uk'), { rr: 'test.www', domain: 'example.co.uk' });
 });
 
-test('supports three-level public suffixes', () => {
-    assert.deepEqual(splitDomain('home.school.k12.ca.us'), { rr: 'home', domain: 'school.k12.ca.us' });
-});
-
 test('ignores trailing dot and empty labels', () => {
     assert.deepEqual(splitDomain('..www.example.com.'), { rr: 'www', domain: 'example.com' });
 });

@@ -297,16 +297,14 @@ async function handleCloudflare(id, token, domain, ip) {
 // ==========================================
 
 // 常见的多级公共后缀（可按需扩展）
-const MULTI_LEVEL_TLDS = new Set([
-    "co.uk", "org.uk", "gov.uk", "ac.uk",
-    "com.cn", "net.cn", "org.cn", "gov.cn", "ac.cn", "edu.cn",
-    "com.tw", "net.tw", "org.tw", "idv.tw", "gov.tw", "edu.tw",
-    "com.hk", "net.hk", "org.hk", "edu.hk",
-    "com.au", "net.au", "org.au", "gov.au", "edu.au",
-    "co.jp", "ne.jp", "or.jp", "ac.jp", "go.jp",
-    "k12.ca.us", "k12.tx.us", "k12.wa.us", "k12.ma.us", "k12.fl.us"
-]);
-const MULTI_LEVEL_TLD_PARTS = Array.from(MULTI_LEVEL_TLDS).map(s => s.split('.'));
+const MULTI_LEVEL_TLD_PARTS = [
+    ["co", "uk"], ["org", "uk"], ["gov", "uk"], ["ac", "uk"],
+    ["com", "cn"], ["net", "cn"], ["org", "cn"], ["gov", "cn"], ["ac", "cn"], ["edu", "cn"],
+    ["com", "tw"], ["net", "tw"], ["org", "tw"], ["idv", "tw"], ["gov", "tw"], ["edu", "tw"],
+    ["com", "hk"], ["net", "hk"], ["org", "hk"], ["edu", "hk"],
+    ["com", "au"], ["net", "au"], ["org", "au"], ["gov", "au"], ["edu", "au"],
+    ["co", "jp"], ["ne", "jp"], ["or", "jp"], ["ac", "jp"], ["go", "jp"]
+];
 
 export function splitDomain(full) {
     const cleaned = full.replace(/\.$/, '');

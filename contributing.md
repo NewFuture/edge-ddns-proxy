@@ -13,7 +13,7 @@
 ## 行为与兼容性
 - **状态归一**：当前处理路径实际返回 `created`、`updated`、`skipped`、`AUTH_FAIL`、`BAD_INPUT`、`ERROR`；`createDDNSResponse` 同时识别 `SUCCESS` 与 `NO_CHANGE` 并映射到 DynDNS/EasyDNS 规范（如 `good <ip>`、`nochg <ip>`、`badauth`、`911` 等），以保持兼容性。
 - **IP 获取顺序**：`myip/ip/addr` 查询参数优先；缺失时按 `request.clientAddr` → `cf-connecting-ip` → `x-client-ip` → `x-forwarded-for`（首个值） → `x-real-ip` 的顺序回退。
-- **域名拆分**：`splitDomain` 会移除末尾的点并过滤空段；默认将最后两段作为主域，其余为 RR，但对 `co.uk` / `com.cn` / `com.tw` / `com.au` / `co.jp` / `k12.ca.us` 等常见多级后缀会将后缀外再多取一段作为主域，RR 不存在时返回 `@`。
+- **域名拆分**：`splitDomain` 会移除末尾的点并过滤空段；默认将最后两段作为主域，其余为 RR，但对 `co.uk` / `com.cn` / `com.tw` / `com.au` / `co.jp` 等常见多级后缀会将后缀外再多取一段作为主域，RR 不存在时返回 `@`。
 - **签名工具**：`signAndSendV3` 统一处理阿里云和腾讯云的 V3 签名，Cloudflare 直接使用 Bearer Token。
 
 ## 本地与线上验证
