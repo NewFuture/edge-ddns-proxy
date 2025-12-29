@@ -11,8 +11,8 @@
 - `CONFIG.CACHE_TTL`：成功时将 IP 写入 `DDNS_KV`，5 分钟内重复请求直接返回 `skipped`。
 
 ## 行为与兼容性
-- **状态归一**：处理结果只使用 `created`、`updated`、`skipped`、`AUTH_FAIL`、`BAD_INPUT`、`ERROR`，并映射到 DynDNS/EasyDNS 规范（如 `good <ip>`、`badauth`、`911` 等）。
-- **IP 获取顺序**：`myip/ip/addr` 查询参数优先，其次 `x-forwarded-for` / `cf-connecting-ip` / `x-client-ip` / `x-real-ip`，最后 `request.clientAddr`。
+- **状态归一**：处理结果会落在 `created`、`updated`、`skipped`、`SUCCESS`、`NO_CHANGE`、`AUTH_FAIL`、`BAD_INPUT`、`ERROR` 中，并映射到 DynDNS/EasyDNS 规范（如 `good <ip>`、`nochg <ip>`、`badauth`、`911` 等）。
+- **IP 获取顺序**：`myip/ip/addr` 查询参数优先；缺失时依次尝试 `request.clientAddr`、`cf-connecting-ip`、`x-client-ip`、`x-forwarded-for`（首个值）、`x-real-ip`。
 - **域名拆分**：`splitDomain` 将末两段视为主域，其余为 RR，默认 RR 为 `@`。
 - **签名工具**：`signAndSendV3` 统一处理阿里云和腾讯云的 V3 签名，Cloudflare 直接使用 Bearer Token。
 
