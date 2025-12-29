@@ -235,8 +235,11 @@ function isDomainAllowed(domain, allowedSuffixString) {
     if (!allowedSuffixString) return true;
     const suffixList = String(allowedSuffixString).split(',')
         .map(s => s.trim().replace(/^\./, '').toLowerCase())
-        .filter(s => s && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(s));
-    if (!suffixList.length) return false;
+        .filter(s => s && /^[a-z0-9-]+(\.[a-z0-9-]+)*$/.test(s));
+    if (!suffixList.length) {
+        console.warn("ALLOWED_SUFFIX configured but no valid suffixes found. Whitelist check skipped.");
+        return true;
+    }
 
     const target = domain.toLowerCase();
     return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
