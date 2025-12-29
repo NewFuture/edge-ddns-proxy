@@ -28,7 +28,7 @@ English | [简体中文](README.md)
        └─────────────────────┘
                  │
        Traditional DDNS Protocol
-   (DynDNS/no-ip/ EasyDNS/qdns, etc.)
+   (DynDNS/no-ip/EasyDNS/qdns, etc.)
                  │
                  ▼
        ┌─────────────────────┐

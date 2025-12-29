@@ -8,7 +8,7 @@
 
 ## 📋 概述
 
-**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录。无需使用而
+**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录，无需更换现有设备。
 
 ### 💡 核心价值
 
@@ -22,11 +22,11 @@
 ```
        ┌─────────────────────┐
        │    光猫/路由器        │
-       │    内置DDNS客户端       │
+       │    内置 DDNS 客户端       │
        └─────────────────────┘
                  │
             传统 DDNS 协议
-       (DynDNS/no-ip/ EasyDNS/qdns等)
+       (DynDNS/no-ip/EasyDNS/qdns等)
                  │
                  ▼
        ┌─────────────────────┐
@@ -61,7 +61,7 @@
 - ✅ **qdns** - QDNS 协议及类似服务
 - ⚠️ **oray (花生壳)** - 部分支持
 
-#### 支持DNS 云厂商
+#### 支持 DNS 云厂商
 - Cloudflare
 - 阿里云 DNS (AccessKey)
 - 腾讯云 DNS (DNSPod Accesskey)
@@ -72,7 +72,7 @@
 #### 前置条件
 
 - 支持传统 DDNS 功能的路由器或光猫设备
-- 域名托管在阿里云，腾讯云或者cloudflare DNS 服务商的 API 访问权限
+- 域名托管在阿里云，腾讯云，或者 Cloudflare DNS 服务商的 API 访问权限
 
 #### 基本配置步骤
 
@@ -85,7 +85,7 @@
 
 路由器 DDNS 设置：
 ```
-服务提供商：DynDNS系列,或者no-ip,easydns均可
+服务提供商：DynDNS 系列，或者 no-ip、EasyDNS 均可
 DDNS 服务器：your-proxy.edge-platform.com
 用户名：your-key
 密码：your-api-token
