@@ -95,6 +95,7 @@ DDNS 服务器：edge-ddns-proxy.edge-platform.com
 - 传统路由器的 DDNS 协议大多使用 **HTTP 明文传输**（非 HTTPS），在光猫/路由器到边缘节点的链路上存在被截获的理论风险
 - 建议使用 **最小权限原则** 配置 API 密钥，仅授予 DNS 记录更新权限
 - 代理服务应设置访问控制，避免未授权访问
+- 如需限制可更新的域名，设置环境变量 `ALLOWED_SUFFIX`（逗号分隔域名后缀，如 `.example.com,.newfuture.cc`），其他域名将被拒绝
 - 定期检查和更新 API 凭证
 
 ### 📚 技术细节

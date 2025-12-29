@@ -16,7 +16,10 @@ const CONFIG = {
     DEFAULT_PROVIDER: 'ali',
 
     // Cache (seconds)
-    CACHE_TTL: 300
+    CACHE_TTL: 300,
+
+    // Domain whitelist (comma separated suffix list, empty means allow all)
+    ALLOWED_SUFFIX: ''
 };
 
 // ==========================================
@@ -32,6 +35,12 @@ export default {
             if (!username && !password) return createDDNSResponse(request, 'AUTH_FAIL'); // 401
             if (!domain) return createDDNSResponse(request, 'BAD_INPUT'); // 400
             if (!ip) return createDDNSResponse(request, 'ERROR'); // 500 (IP检测失败)
+
+            // 2.1 域名白名单校验（可选）
+            const allowedSuffix = (env && env.ALLOWED_SUFFIX) || CONFIG.ALLOWED_SUFFIX;
+            if (!isDomainAllowed(domain, allowedSuffix)) {
+                return createDDNSResponse(request, 'BAD_INPUT');
+            }
 
             // 3. 识别厂商
             const provider = detectProvider(username, password) || defaultProvider || CONFIG.DEFAULT_PROVIDER;
@@ -219,6 +228,17 @@ function detectProvider(id, key) {
     if (/^AKID[a-zA-Z0-9]{10,}/.test(id) || /^\d{10,}$/.test(id)) return "tencent";
     if ((key && key.length >= 30) || (id && id.length >= 30)) return "cloudflare";
     return null;
+}
+
+function isDomainAllowed(domain, allowedSuffix) {
+    if (!allowedSuffix) return true;
+    const suffixList = (Array.isArray(allowedSuffix) ? allowedSuffix : allowedSuffix.split(','))
+        .map(s => s.trim().replace(/^\./, '').toLowerCase())
+        .filter(Boolean);
+    if (!suffixList.length) return true;
+
+    const target = domain.toLowerCase();
+    return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
 }
 
 // ==========================================
