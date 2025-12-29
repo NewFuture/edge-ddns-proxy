@@ -2,15 +2,13 @@
 
 > 让传统路由器/光猫的 DDNS 功能支持现代 DNS 服务商
 
-[![License](https://img.shields.io/github/license/NewFuture/edge-ddns-proxy)](LICENSE)
-
 [English](README.en.md) | 简体中文
 
 ---
 
 ## 📋 概述
 
-**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录。
+**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录。无需使用而
 
 ### 💡 核心价值
 
@@ -24,13 +22,11 @@
 ```
        ┌─────────────────────┐
        │    光猫/路由器        │
-       │   (Router/ONT)      │
-       │    DDNS 客户端       │
+       │    内置DDNS客户端       │
        └─────────────────────┘
                  │
-                 │ 传统 DDNS 协议
-                 │ (DynDNS/no-ip/
-                 │  EasyDNS/qdns等)
+            传统 DDNS 协议
+       (DynDNS/no-ip/ EasyDNS/qdns等)
                  │
                  ▼
        ┌─────────────────────┐
@@ -39,8 +35,7 @@
        │     协议转换层       │
        └─────────────────────┘
                  │
-                 │ 现代 DNS 服务商 API
-                 │ (RESTful/GraphQL)
+       现代 DNS 服务商 API
                  │
                  ▼
        ┌─────────────────────┐
@@ -51,8 +46,14 @@
        │   - 其他服务商       │
        └─────────────────────┘
 ```
+### 🎯 使用场景
 
-### 📡 支持的 DDNS 协议
+此解决方案适用于以下场景：
+
+1. ✅ 您的路由器/光猫仅支持传统 DDNS 协议（DynDNS、no-ip 等）
+2. ✅ 您的域名使用现代 DNS 服务商（Cloudflare、阿里云 DNS、腾讯云 DNS 等）管理
+
+#### 📡 支持的 DDNS 协议
 
 - ✅ **DynDNS** - 经典动态 DNS 协议
 - ✅ **no-ip** - No-IP DDNS 协议
@@ -60,22 +61,18 @@
 - ✅ **qdns** - QDNS 协议及类似服务
 - ⚠️ **oray (花生壳)** - 部分支持
 
-### 🎯 使用场景
+#### 支持DNS 云厂商
+- Cloudflare
+- 阿里云 DNS (AccessKey)
+- 腾讯云 DNS (DNSPod Accesskey)
 
-此解决方案适用于以下场景：
-
-1. ✅ 您的路由器/光猫仅支持传统 DDNS 协议（DynDNS、no-ip 等）
-2. ✅ 您的域名使用现代 DNS 服务商（Cloudflare、阿里云 DNS、腾讯云 DNS 等）管理
-3. ✅ 您无法在设备上安装自定义固件或软件
-4. ✅ 您需要自动更新动态公网 IP 地址到 DNS 解析记录
 
 ### 🚀 快速开始
 
 #### 前置条件
 
-- 支持 DDNS 功能的路由器或光猫设备
-- 边缘计算平台账号（阿里云、腾讯云或 Cloudflare）
-- DNS 服务商的 API 访问权限
+- 支持传统 DDNS 功能的路由器或光猫设备
+- 域名托管在阿里云，腾讯云或者cloudflare DNS 服务商的 API 访问权限
 
 #### 基本配置步骤
 
@@ -84,23 +81,11 @@
 - 配置 DNS 服务商的 API 凭证（AccessKey、SecretKey 等）
 - 记录代理服务的访问 URL
 
-**第二步：配置路由器**
-- 登录路由器管理界面，找到 DDNS 设置
-- 选择支持的协议（DynDNS、no-ip、EasyDNS 等）
-- 将代理服务 URL 填入 DDNS 服务器地址
-- 填入身份认证信息（用户名/密码）
-- 设置要更新的完整域名（如 home.example.com）
-
-**第三步：测试验证**
-- 保存路由器配置并应用
-- 等待路由器自动发起第一次 DDNS 更新
-- 检查 DNS 服务商控制台，确认记录已正确更新
-
 ### 📝 配置示例
 
 路由器 DDNS 设置：
 ```
-服务提供商：DynDNS
+服务提供商：DynDNS系列,或者no-ip,easydns均可
 DDNS 服务器：your-proxy.edge-platform.com
 用户名：your-key
 密码：your-api-token
@@ -128,15 +113,15 @@ DDNS 服务器：your-proxy.edge-platform.com
 6. ✔️ 将更新结果转换为标准 DDNS 响应返回给路由器
 
 **支持的边缘计算平台：**
-- [阿里云函数计算 FC](https://www.aliyun.com/product/fc)
-- [腾讯云云函数 SCF](https://cloud.tencent.com/product/scf)
+- [阿里云ESA](https://common-buy.aliyun.com/?commodityCode=dcdn_dcdnserviceplan_public_cn&orderType=RENEW&instanceId=esa-site-b1da082k62v4)
+- [腾讯云EdgeOne](https://edgeone.cloud.tencent.com/)
 - [Cloudflare Workers](https://workers.cloudflare.com/)
 
 ---
 
 ## 📄 开源协议
 
-本项目采用 [MIT 协议](LICENSE) 开源。
+本项目采用 [Apache 协议](LICENSE) 开源。
 
 ## 🤝 参与贡献
 

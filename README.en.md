@@ -24,13 +24,11 @@ English | [简体中文](README.md)
 ```
        ┌─────────────────────┐
        │   Router / ONT      │
-       │   (光猫/路由器)      │
        │   DDNS Client       │
        └─────────────────────┘
                  │
-                 │ Traditional DDNS Protocol
-                 │ (DynDNS/no-ip/
-                 │  EasyDNS/qdns, etc.)
+       Traditional DDNS Protocol
+   (DynDNS/no-ip/ EasyDNS/qdns, etc.)
                  │
                  ▼
        ┌─────────────────────┐
@@ -39,8 +37,7 @@ English | [简体中文](README.md)
        │  Protocol Bridge    │
        └─────────────────────┘
                  │
-                 │ Modern DNS Provider API
-                 │ (RESTful/GraphQL)
+       Modern DNS Provider API
                  │
                  ▼
        ┌─────────────────────┐
@@ -128,15 +125,15 @@ Hostname: yourdomain.com
 6. ✔️ Converts update results into standard DDNS response and returns to router
 
 **Supported Edge Computing Platforms:**
-- [Alibaba Cloud Function Compute (FC)](https://www.aliyun.com/product/fc)
-- [Tencent Cloud Serverless Cloud Function (SCF)](https://cloud.tencent.com/product/scf)
+- [Alibaba Cloud ESA](https://cn.aliyun.com/product/esa)
+- [Tencent Cloud EdgeOne]https://edgeone.cloud.tencent.com/
 - [Cloudflare Workers](https://workers.cloudflare.com/)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Apache License](LICENSE).
 
 ## 🤝 Contributing
 
