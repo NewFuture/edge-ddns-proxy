@@ -296,27 +296,32 @@ async function handleCloudflare(id, token, domain, ip) {
 // 6. 通用签名与工具 (Crypto V3)
 // ==========================================
 
+// 常见的多级公共后缀（可按需扩展）
 const MULTI_LEVEL_TLDS = new Set([
     "co.uk", "org.uk", "gov.uk", "ac.uk",
     "com.cn", "net.cn", "org.cn", "gov.cn", "ac.cn", "edu.cn",
     "com.tw", "net.tw", "org.tw", "idv.tw", "gov.tw", "edu.tw",
     "com.hk", "net.hk", "org.hk", "edu.hk",
     "com.au", "net.au", "org.au", "gov.au", "edu.au",
-    "co.jp", "ne.jp", "or.jp", "ac.jp", "go.jp"
+    "co.jp", "ne.jp", "or.jp", "ac.jp", "go.jp",
+    "k12.ca.us", "k12.tx.us", "k12.wa.us", "k12.ma.us", "k12.fl.us"
 ]);
+const MULTI_LEVEL_TLD_PARTS = Array.from(MULTI_LEVEL_TLDS).map(s => s.split('.'));
 
 export function splitDomain(full) {
     const cleaned = full.replace(/\.$/, '');
     const parts = cleaned.split('.').filter(Boolean);
-    if (parts.length <= 2) return { rr: "@", domain: cleaned };
+    if (parts.length <= 2) return { rr: "@", domain: parts.join('.') };
 
     const lowerParts = parts.map(p => p.toLowerCase());
-    const last2 = lowerParts.slice(-2).join('.');
-    const last3 = lowerParts.slice(-3).join('.');
 
     let suffixLength = 1;
-    if (MULTI_LEVEL_TLDS.has(last2)) suffixLength = 2;
-    else if (MULTI_LEVEL_TLDS.has(last3)) suffixLength = 3;
+    for (const suffix of MULTI_LEVEL_TLD_PARTS) {
+        if (suffix.length >= lowerParts.length) continue;
+        const offset = lowerParts.length - suffix.length;
+        const matched = suffix.every((label, idx) => lowerParts[offset + idx] === label);
+        if (matched && suffix.length > suffixLength) suffixLength = suffix.length;
+    }
 
     const domainParts = parts.slice(-(suffixLength + 1));
     const rrParts = parts.slice(0, -(suffixLength + 1));
