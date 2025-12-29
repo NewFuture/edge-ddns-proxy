@@ -1,0 +1,13 @@
+{
+  "name": "edge-ddns-proxy",
+  "version": "1.0.0",
+  "description": "> 让传统路由器/光猫的 DDNS 功能支持现代 DNS 服务商",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0"
+}

@@ -296,10 +296,35 @@ async function handleCloudflare(id, token, domain, ip) {
 // 6. 通用签名与工具 (Crypto V3)
 // ==========================================
 
-function splitDomain(full) {
-    const parts = full.split('.');
-    if (parts.length <= 2) return { rr: "@", domain: full };
-    return { domain: parts.slice(-2).join('.'), rr: parts.slice(0, -2).join('.') };
+const MULTI_LEVEL_TLDS = new Set([
+    "co.uk", "org.uk", "gov.uk", "ac.uk",
+    "com.cn", "net.cn", "org.cn", "gov.cn", "ac.cn", "edu.cn",
+    "com.tw", "net.tw", "org.tw", "idv.tw", "gov.tw", "edu.tw",
+    "com.hk", "net.hk", "org.hk", "edu.hk",
+    "com.au", "net.au", "org.au", "gov.au", "edu.au",
+    "co.jp", "ne.jp", "or.jp", "ac.jp", "go.jp"
+]);
+
+export function splitDomain(full) {
+    const cleaned = full.replace(/\.$/, '');
+    const parts = cleaned.split('.').filter(Boolean);
+    if (parts.length <= 2) return { rr: "@", domain: cleaned };
+
+    const lowerParts = parts.map(p => p.toLowerCase());
+    const last2 = lowerParts.slice(-2).join('.');
+    const last3 = lowerParts.slice(-3).join('.');
+
+    let suffixLength = 1;
+    if (MULTI_LEVEL_TLDS.has(last2)) suffixLength = 2;
+    else if (MULTI_LEVEL_TLDS.has(last3)) suffixLength = 3;
+
+    const domainParts = parts.slice(-(suffixLength + 1));
+    const rrParts = parts.slice(0, -(suffixLength + 1));
+
+    return {
+        domain: domainParts.join('.'),
+        rr: rrParts.length ? rrParts.join('.') : "@"
+    };
 }
 
 async function signAndSendV3(endpoint, version, id, key, action, params, type) {
