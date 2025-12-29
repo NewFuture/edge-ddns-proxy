@@ -232,8 +232,10 @@ function detectProvider(id, key) {
 }
 
 function isDomainAllowed(domain, allowedSuffixString) {
-    if (!allowedSuffixString) return true;
-    const suffixList = String(allowedSuffixString).split(',')
+    const whitelistConfig = String(allowedSuffixString || '').trim();
+    if (!whitelistConfig) return true;
+
+    const suffixList = whitelistConfig.split(',')
         .map(s => s.trim().replace(/^\./, '').toLowerCase())
         .filter(Boolean);
     if (!suffixList.length) {
@@ -242,7 +244,13 @@ function isDomainAllowed(domain, allowedSuffixString) {
     }
 
     const target = domain.toLowerCase();
-    return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
+    return suffixList.some(suffix => {
+        if (target === suffix) return true;
+        const targetParts = target.split('.');
+        const suffixParts = suffix.split('.');
+        if (targetParts.length <= suffixParts.length) return false;
+        return targetParts.slice(-suffixParts.length).join('.') === suffix;
+    });
 }
 
 // ==========================================
