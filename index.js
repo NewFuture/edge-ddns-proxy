@@ -112,7 +112,7 @@ export function createDDNSResponse(request, status, currentIp = '') {
     // EasyDNS 协议判断
     const isEasyDNS = /\/dyn\/(generic|ez-ipupdate|tomato)\.php/.test(url.pathname);
 
-    let statusCode = 200;
+    let statusCode;
     let body = '';
 
     // 状态归类
@@ -183,7 +183,10 @@ export async function extractParams(request) {
             const parts = decoded.split(':');
             username = parts[0];
             password = parts.slice(1).join(':');
-        } catch (e) { }
+        } catch (e) {
+            // Log Basic Auth parsing errors for easier debugging without exposing credentials
+            console.error("Failed to parse Basic Auth header:", e);
+        }
     }
 
     if (!username) username = query.get('user') || query.get('username') || '';
@@ -194,10 +197,14 @@ export async function extractParams(request) {
     // IP 优先级: Query > Headers
     let ip = query.get('myip') || query.get('ip') || query.get('addr');
     if (!ip) {
+        let forwardedFor = headers.get('x-forwarded-for');
+        if (forwardedFor) {
+            forwardedFor = forwardedFor.split(',')[0].trim();
+        }
         ip = request.clientAddr ||
             headers.get('cf-connecting-ip') ||
             headers.get('x-client-ip') ||
-            headers.get('x-forwarded-for') ||
+            forwardedFor ||
             headers.get('x-real-ip') ||
             '';
     }
@@ -302,7 +309,16 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
 
     let body, cType;
     if (isTencent) { body = JSON.stringify(params); cType = "application/json; charset=utf-8"; }
-    else { const u = new URLSearchParams(); Object.entries(params).forEach(([k, v]) => v != null && u.append(k, v)); body = u.toString(); cType = "application/x-www-form-urlencoded"; }
+    else {
+        const u = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+            if (value != null) {
+                u.append(key, value);
+            }
+        });
+        body = u.toString();
+        cType = "application/x-www-form-urlencoded";
+    }
 
     const d = new Date();
     const ts = Math.floor(d / 1000);
