@@ -37,8 +37,8 @@ export default {
             if (!ip) return createDDNSResponse(request, 'ERROR'); // 500 (IP检测失败)
 
             // 2.1 域名白名单校验（可选）
-            const allowedSuffixes = env?.ALLOWED_SUFFIX ?? CONFIG.ALLOWED_SUFFIX;
-            if (!isDomainAllowed(domain, allowedSuffixes)) {
+            const allowedSuffixString = env?.ALLOWED_SUFFIX ?? CONFIG.ALLOWED_SUFFIX;
+            if (!isDomainAllowed(domain, allowedSuffixString)) {
                 return createDDNSResponse(request, 'BAD_INPUT');
             }
 
@@ -230,10 +230,10 @@ function detectProvider(id, key) {
     return null;
 }
 
-function isDomainAllowed(domain, allowedSuffixes) {
-    if (!allowedSuffixes) return true;
-    const suffixList = String(allowedSuffixes).split(',')
-        .map(s => s.trim().replace(/^\.+/, '').toLowerCase())
+function isDomainAllowed(domain, allowedSuffixString) {
+    if (!allowedSuffixString) return true;
+    const suffixList = String(allowedSuffixString).split(',')
+        .map(s => s.trim().replace(/^\./, '').toLowerCase())
         .filter(Boolean);
     if (!suffixList.length) return true;
 
