@@ -1,6 +1,6 @@
 # edge-ddns-proxy
 
-> 让传统路由器/光猫的 DDNS 功能支持现代 DNS 服务商
+> 通过传统路由器/光猫的 DDNS 功能自动更新现代 DNS 服务商的解析记录
 
 [English](README.en.md) | 简体中文
 
@@ -8,7 +8,7 @@
 
 ## 📋 概述
 
-**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录，无需更换现有设备。
+**edge-ddns-proxy** 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录，无需运行额外的客户端程序。
 
 ### 🔄 工作原理
 
@@ -32,11 +32,10 @@
                  │
                  ▼
        ┌─────────────────────┐
-       │     DNS 服务商      │
+       │     DNS 服务商       │
        │   - Cloudflare      │
        │   - 阿里云 DNS       │
        │   - 腾讯云 DNS       │
-       │   - 其他服务商       │
        └─────────────────────┘
 ```
 ### 🎯 使用场景
@@ -46,12 +45,12 @@
 1. ✅ 您的路由器/光猫仅支持传统 DDNS 协议（DynDNS、no-ip 等）
 2. ✅ 您的域名使用现代 DNS 服务商（Cloudflare、阿里云 DNS、腾讯云 DNS 等）管理
 
-> 如果你想在客户端运行DDNS来更新你的ipv6地址或者更定制话的需求，可以使用 https://github.com/NewFuture/DDNS
+> 如果你想在客户端运行DDNS来更新你的IPv6地址或者更定制化的需求，可以使用 https://github.com/NewFuture/DDNS
 
 #### 📡 支持的 DDNS 协议
 
 - **DynDNS** - 经典动态 DNS 协议
-- - **oray (花生壳)** - 国内DDNS服务商
+- **oray (花生壳)** - 国内流行的DDNS服务商
 - **no-ip** - No-IP DDNS 协议
 - **EasyDNS** - EasyDNS 更新协议
 - **qdns** - QDNS 协议及类似服务
@@ -61,9 +60,12 @@
 - Cloudflare
 - 阿里云 DNS (AccessKey)
 - 腾讯云 DNS (DNSPod Accesskey)
+- 欢迎添加
 
 
 ### 🚀 快速开始
+
+![配置示例](./huawei-ddns.png)
 
 #### 前置条件
 
@@ -79,11 +81,11 @@
 
 路由器 DDNS 设置：
 ```
-服务提供商：DynDNS 系列，或者 no-ip、EasyDNS 均可
-DDNS 服务器：your-proxy.edge-platform.com
+主机名：yourdomain.com
+服务提供商：DynDNS 系列，或者 no-ip、EasyDNS、Oray均可
+DDNS 服务器：edge-ddns-proxy.edge-platform.com
 用户名：your-key
 密码：your-api-token
-主机名：yourdomain.com
 ```
 
 ### 🔒 安全性说明
