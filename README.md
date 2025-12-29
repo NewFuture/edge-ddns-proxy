@@ -21,8 +21,8 @@
 
 ```
        ┌─────────────────────┐
-       │    光猫/路由器        │
-       │    内置 DDNS 客户端      │
+       │    光猫/路由器       │
+       │    内置 DDNS 客户端  │
        └─────────────────────┘
                  │
             传统 DDNS 协议
@@ -39,7 +39,7 @@
                  │
                  ▼
        ┌─────────────────────┐
-       │     DNS 服务商       │
+       │     DNS 服务商      │
        │   - Cloudflare      │
        │   - 阿里云 DNS       │
        │   - 腾讯云 DNS       │
@@ -55,11 +55,12 @@
 
 #### 📡 支持的 DDNS 协议
 
-- ✅ **DynDNS** - 经典动态 DNS 协议
-- ✅ **no-ip** - No-IP DDNS 协议
-- ✅ **EasyDNS** - EasyDNS 更新协议
-- ✅ **qdns** - QDNS 协议及类似服务
-- ⚠️ **oray (花生壳)** - 部分支持
+- **DynDNS** - 经典动态 DNS 协议
+- - **oray (花生壳)** - 国内DDNS服务商
+- **no-ip** - No-IP DDNS 协议
+- **EasyDNS** - EasyDNS 更新协议
+- **qdns** - QDNS 协议及类似服务
+
 
 #### ☁️ 支持 DNS 云厂商
 - Cloudflare
@@ -76,8 +77,6 @@
 
 #### 基本配置步骤
 
-**第一步：部署代理服务**
-- 将 edge-ddns-proxy 部署到边缘计算平台
 - 配置 DNS 服务商的 API 凭证（AccessKey、SecretKey 等）
 - 记录代理服务的访问 URL
 
