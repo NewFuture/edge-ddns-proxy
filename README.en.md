@@ -126,7 +126,7 @@ Hostname: yourdomain.com
 
 **Supported Edge Computing Platforms:**
 - [Alibaba Cloud ESA](https://cn.aliyun.com/product/esa)
-- [Tencent Cloud EdgeOne]https://edgeone.cloud.tencent.com/
+- [Tencent Cloud EdgeOne](https://edgeone.cloud.tencent.com/)
 - [Cloudflare Workers](https://workers.cloudflare.com/)
 
 ---
