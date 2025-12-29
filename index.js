@@ -18,7 +18,7 @@ const CONFIG = {
     // Cache (seconds)
     CACHE_TTL: 300,
 
-    // Domain whitelist (comma separated suffix list, empty means allow all)
+    // Domain whitelist (comma separated suffix list, empty means allow all). env.ALLOWED_SUFFIX overrides this value.
     ALLOWED_SUFFIX: ''
 };
 
@@ -39,6 +39,7 @@ export default {
             // 2.1 域名白名单校验（可选）
             const allowedSuffixString = env?.ALLOWED_SUFFIX ?? CONFIG.ALLOWED_SUFFIX;
             if (!isDomainAllowed(domain, allowedSuffixString)) {
+                console.warn(`Domain ${domain} rejected by whitelist.`);
                 return createDDNSResponse(request, 'BAD_INPUT');
             }
 
@@ -234,8 +235,8 @@ function isDomainAllowed(domain, allowedSuffixString) {
     if (!allowedSuffixString) return true;
     const suffixList = String(allowedSuffixString).split(',')
         .map(s => s.trim().replace(/^\./, '').toLowerCase())
-        .filter(Boolean);
-    if (!suffixList.length) return true;
+        .filter(s => s && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(s));
+    if (!suffixList.length) return false;
 
     const target = domain.toLowerCase();
     return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
