@@ -244,7 +244,7 @@ function detectProvider(id, key) {
  * - Whitelist string is trimmed; empty means allow all.
  * - Suffix items are trimmed, lowercased, and leading dots removed.
  * - Exact domain match or subdomain (endsWith) of suffix passes.
- * - Invalid/blank suffix config logs a warning and blocks.
+ * - Invalid/blank suffix items are ignored; no warnings are logged.
  */
 function isDomainAllowed(domain, allowedSuffixString) {
     const whitelistConfig = String(allowedSuffixString || '').trim();
