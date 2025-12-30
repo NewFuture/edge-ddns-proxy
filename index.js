@@ -243,7 +243,7 @@ function isDomainAllowed(domain, allowedSuffixString) {
         return false;
     }
 
-    const target = domain.toLowerCase();
+    const target = domain.toLowerCase().trim();
     return suffixList.some(suffix => {
         if (target === suffix) return true;
         const targetParts = target.split('.');
