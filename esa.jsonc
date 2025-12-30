@@ -1,0 +1,10 @@
+{
+  "name": "edge-ddns-proxy",
+  "entry": "./index.js",
+//   "installCommand": "",
+//   "buildCommand": "",
+//   "assets": {
+//     "directory": "./dist",
+//     "notFoundStrategy": "singlePageApplication"
+//   }
+}
