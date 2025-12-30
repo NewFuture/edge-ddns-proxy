@@ -31,7 +31,7 @@ export default {
             const url = new URL(request.url);
             const accept = (request.headers.get('accept') || '').toLowerCase();
             if (url.pathname === '/' && url.search === '' && accept.includes('text/html')) {
-                return Response.redirect('https://newfuture.github.io/edge-ddns-proxy', 302);
+                return Response.redirect('https://edge-ddns-proxy.newfuture.cc/', 302);
             }
 
             // 1. 提取参数
@@ -219,14 +219,10 @@ export async function extractParams(request) {
     // IP 优先级: Query > Headers
     let ip = query.get('myip') || query.get('ip') || query.get('addr');
     if (!ip) {
-        let forwardedFor = headers.get('x-forwarded-for');
-        if (forwardedFor) {
-            forwardedFor = forwardedFor.split(',')[0].trim();
-        }
         ip = request.clientAddr ||
             headers.get('cf-connecting-ip') ||
             headers.get('x-client-ip') ||
-            forwardedFor ||
+            headers.get('x-forwarded-for')?.split(',')[0].trim() ||
             headers.get('x-real-ip') ||
             '';
     }
