@@ -8,7 +8,7 @@
 
 ## 📋 概述
 
-[**edge-ddns-proxy**](https://github.com/NewFuture/DDNS) 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录，无需运行额外的客户端程序。
+[**edge-ddns-proxy**](https://github.com/NewFuture/edge-ddns-proxy) 是一个运行在边缘计算平台（阿里云、腾讯云、Cloudflare）上的无服务器中间代理服务。它在路由器/光猫使用的传统 DDNS 协议与现代 DNS 服务商 API 之间架起桥梁，使老旧设备能够在现代 DNS 管理平台上更新 DNS 记录，无需运行额外的客户端程序。
 
 ### 🔄 工作原理
 

@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-[**edge-ddns-proxy**](https://github.com/NewFuture/DDNS) is a serverless middleware proxy that runs on edge computing platforms (Alibaba Cloud, Tencent Cloud, Cloudflare). It bridges traditional DDNS protocols used by routers/ONTs with modern DNS provider APIs, so legacy devices can update DNS records on modern DNS platforms without running any extra client software.
+[**edge-ddns-proxy**](https://github.com/NewFuture/edge-ddns-proxy) is a serverless middleware proxy that runs on edge computing platforms (Alibaba Cloud, Tencent Cloud, Cloudflare). It bridges traditional DDNS protocols used by routers/ONTs with modern DNS provider APIs, so legacy devices can update DNS records on modern DNS platforms without running any extra client software.
 
 ### 🔄 How It Works
 
