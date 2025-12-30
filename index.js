@@ -9,14 +9,17 @@
 const CONFIG = {
     // Endpoints
     ali: { endpoint: "https://alidns.aliyuncs.com", version: "2015-01-09" },
-    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "ap-guangzhou" },
+    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "" },
     cloudflare: { endpoint: "https://api.cloudflare.com/client/v4" },
 
     // Default provider fallback ('ali', 'tencent', 'cloudflare', or null)
     DEFAULT_PROVIDER: 'ali',
 
     // Cache (seconds)
-    CACHE_TTL: 300
+    CACHE_TTL: 300,
+
+    // Domain whitelist (comma separated suffix list, empty means allow all). env.ALLOWED_SUFFIX overrides this value.
+    ALLOWED_SUFFIX: ''
 };
 
 // ==========================================
@@ -38,6 +41,13 @@ export default {
             if (!username && !password) return createDDNSResponse(request, 'AUTH_FAIL'); // 401
             if (!domain) return createDDNSResponse(request, 'BAD_INPUT'); // 400
             if (!ip) return createDDNSResponse(request, 'ERROR'); // 500 (IP检测失败)
+
+            // 2.1 域名白名单校验（可选）
+            const allowedSuffixString = env?.ALLOWED_SUFFIX ?? CONFIG.ALLOWED_SUFFIX;
+            if (!isDomainAllowed(domain, allowedSuffixString)) {
+                console.warn(`Domain ${domain} rejected by whitelist.`);
+                return createDDNSResponse(request, 'NOHOST');
+            }
 
             // 3. 识别厂商
             const provider = detectProvider(username, password) || defaultProvider || CONFIG.DEFAULT_PROVIDER;
@@ -133,6 +143,9 @@ export function createDDNSResponse(request, status, currentIp = '') {
         } else if (status === 'AUTH_FAIL') {
             body = 'NOACCESS\n';
             statusCode = 401;
+        } else if (status === 'NOHOST') {
+            body = 'NOHOST\n';
+            statusCode = 400;
         } else if (status === 'BAD_INPUT') {
             body = 'ILLEGAL INPUT\n';
             statusCode = 400;
@@ -151,6 +164,9 @@ export function createDDNSResponse(request, status, currentIp = '') {
         } else if (status === 'AUTH_FAIL') {
             body = 'badauth';
             statusCode = 401;
+        } else if (status === 'NOHOST') {
+            body = 'nohost';
+            statusCode = 400;
         } else if (status === 'BAD_INPUT') {
             body = 'badrequest';
             statusCode = 400;
@@ -225,6 +241,26 @@ function detectProvider(id, key) {
     if (/^AKID[a-zA-Z0-9]{10,}/.test(id) || /^\d{10,}$/.test(id)) return "tencent";
     if ((key && key.length >= 30) || (id && id.length >= 30)) return "cloudflare";
     return null;
+}
+
+/**
+ * Checks whether a domain is allowed by a comma-separated suffix whitelist.
+ *
+ * Rules:
+ * - Whitelist string is trimmed; empty means allow all.
+ * - Suffix items are trimmed, lowercased, and leading dots removed.
+ * - Exact domain match or subdomain (endsWith) of suffix passes.
+ * - Invalid/blank suffix items are ignored; no warnings are logged.
+ */
+function isDomainAllowed(domain, allowedSuffixString) {
+    const whitelistConfig = String(allowedSuffixString || '').trim();
+    if (!whitelistConfig) return true;
+
+    const suffixList = whitelistConfig.split(',')
+        .map(s => s.trim().toLowerCase())
+        .filter(Boolean);
+    const target = String(domain || '').toLowerCase();
+    return suffixList.some(suffix => target === suffix || target.endsWith(suffix) ||`.${target}` === suffix);
 }
 
 // ==========================================

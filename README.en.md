@@ -95,6 +95,7 @@ Password: your-api-token
 - Traditional router DDNS protocols commonly use **plain HTTP** (not HTTPS). There is a theoretical interception risk on the router/ONT → edge-node link
 - Follow the **principle of least privilege** when configuring API keys, granting only DNS record update permissions
 - Add access control for the proxy service to prevent unauthorized access
+- To restrict which domains can be updated, set environment variable `ALLOWED_SUFFIX` with comma-separated domain suffixes (e.g. `.example.com,.newfuture.cc`); other domains will be rejected
 - Regularly review and rotate API credentials
 
 ### 📚 Technical Details
