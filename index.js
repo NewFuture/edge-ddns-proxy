@@ -231,6 +231,15 @@ function detectProvider(id, key) {
     return null;
 }
 
+/**
+ * Checks whether a domain is allowed by a comma-separated suffix whitelist.
+ *
+ * Rules:
+ * - Whitelist string is trimmed; empty means allow all.
+ * - Suffix items are trimmed, lowercased, and leading dots removed.
+ * - Exact domain match or subdomain (endsWith) of suffix passes.
+ * - Invalid/blank suffix config logs a warning and blocks.
+ */
 function isDomainAllowed(domain, allowedSuffixString) {
     const whitelistConfig = String(allowedSuffixString || '').trim();
     if (!whitelistConfig) return true;
@@ -243,14 +252,8 @@ function isDomainAllowed(domain, allowedSuffixString) {
         return false;
     }
 
-    const target = domain.toLowerCase().trim();
-    return suffixList.some(suffix => {
-        if (target === suffix) return true;
-        const targetParts = target.split('.');
-        const suffixParts = suffix.split('.');
-        if (targetParts.length <= suffixParts.length) return false;
-        return targetParts.slice(-suffixParts.length).join('.') === suffix;
-    });
+    const target = String(domain || '').trim().replace(/^\.+|\.+$/g, '').toLowerCase();
+    return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
 }
 
 // ==========================================
