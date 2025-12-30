@@ -40,7 +40,7 @@ export default {
             const allowedSuffixString = env?.ALLOWED_SUFFIX ?? CONFIG.ALLOWED_SUFFIX;
             if (!isDomainAllowed(domain, allowedSuffixString)) {
                 console.warn(`Domain ${domain} rejected by whitelist.`);
-                return createDDNSResponse(request, 'BAD_INPUT');
+                return createDDNSResponse(request, 'NOHOST');
             }
 
             // 3. 识别厂商
@@ -137,6 +137,9 @@ export function createDDNSResponse(request, status, currentIp = '') {
         } else if (status === 'AUTH_FAIL') {
             body = 'NOACCESS\n';
             statusCode = 401;
+        } else if (status === 'NOHOST') {
+            body = 'NOHOST\n';
+            statusCode = 400;
         } else if (status === 'BAD_INPUT') {
             body = 'ILLEGAL INPUT\n';
             statusCode = 400;
@@ -155,6 +158,9 @@ export function createDDNSResponse(request, status, currentIp = '') {
         } else if (status === 'AUTH_FAIL') {
             body = 'badauth';
             statusCode = 401;
+        } else if (status === 'NOHOST') {
+            body = 'nohost';
+            statusCode = 400;
         } else if (status === 'BAD_INPUT') {
             body = 'badrequest';
             statusCode = 400;
@@ -245,15 +251,19 @@ function isDomainAllowed(domain, allowedSuffixString) {
     if (!whitelistConfig) return true;
 
     const suffixList = whitelistConfig.split(',')
-        .map(s => s.trim().replace(/^\./, '').toLowerCase())
+        .map(s => s.trim().toLowerCase())
         .filter(Boolean);
     if (!suffixList.length) {
         console.warn("ALLOWED_SUFFIX configured but no valid suffixes found. Requests will be blocked.");
         return false;
     }
 
-    const target = String(domain || '').trim().replace(/^\.+|\.+$/g, '').toLowerCase();
-    return suffixList.some(suffix => target === suffix || target.endsWith(`.${suffix}`));
+    const target = String(domain || '').toLowerCase();
+    return suffixList.some(suffix => {
+        if (target === suffix || target.endsWith(suffix)) return true;
+        const normalizedSuffix = suffix.startsWith('.') ? suffix.slice(1) : suffix;
+        return normalizedSuffix && (target === normalizedSuffix || target.endsWith(`.${normalizedSuffix}`));
+    });
 }
 
 // ==========================================
