@@ -255,7 +255,6 @@ function isDomainAllowed(domain, allowedSuffixString) {
         .filter(Boolean);
     const target = String(domain || '').toLowerCase();
     return suffixList.some(suffix => target === suffix || target.endsWith(suffix) ||`.${target}` === suffix);
-    });
 }
 
 // ==========================================
