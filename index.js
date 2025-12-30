@@ -9,7 +9,7 @@
 const CONFIG = {
     // Endpoints
     ali: { endpoint: "https://alidns.aliyuncs.com", version: "2015-01-09" },
-    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "ap-guangzhou" },
+    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "" },
     cloudflare: { endpoint: "https://api.cloudflare.com/client/v4" },
 
     // Default provider fallback ('ali', 'tencent', 'cloudflare', or null)
@@ -253,16 +253,8 @@ function isDomainAllowed(domain, allowedSuffixString) {
     const suffixList = whitelistConfig.split(',')
         .map(s => s.trim().toLowerCase())
         .filter(Boolean);
-    if (!suffixList.length) {
-        console.warn("ALLOWED_SUFFIX configured but no valid suffixes found. Requests will be blocked.");
-        return false;
-    }
-
     const target = String(domain || '').toLowerCase();
-    return suffixList.some(suffix => {
-        if (target === suffix || target.endsWith(suffix)) return true;
-        const normalizedSuffix = suffix.startsWith('.') ? suffix.slice(1) : suffix;
-        return normalizedSuffix && (target === normalizedSuffix || target.endsWith(`.${normalizedSuffix}`));
+    return suffixList.some(suffix => target === suffix || target.endsWith(suffix) ||`.${target}` === suffix);
     });
 }
 
