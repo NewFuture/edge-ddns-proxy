@@ -27,7 +27,7 @@ export default {
         try {
             const url = new URL(request.url);
             const accept = (request.headers.get('accept') || '').toLowerCase();
-            if (url.pathname === '/' && url.searchParams.toString() === '' && accept.includes('text/html')) {
+            if (url.pathname === '/' && url.search === '' && accept.includes('text/html')) {
                 return Response.redirect('https://newfuture.github.io/edge-ddns-proxy', 302);
             }
 
