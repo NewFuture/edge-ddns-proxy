@@ -234,7 +234,7 @@ export async function extractParams(request) {
 export function detectProvider(id, key) {
     if (!id && !key) return null;
     if (/^LTAI[a-zA-Z0-9]{10,}/.test(id)) return "ali";
-    if (/^AKID[a-zA-Z0-9]{10,}/.test(id) || /^\d+$/.test(id)) return "tencent";
+    if (/^AKID[a-zA-Z0-9]{10,}/.test(id) || /^\d{5,}$/.test(id)) return "tencent";
     if ((key && key.length >= 30) || (id && id.length >= 30)) return "cloudflare";
     return null;
 }
