@@ -405,7 +405,10 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
 
     // For TencentCloud: only 'host' and 'content-type' are included in signature
     // For Aliyun: include x-acs-* headers in signature
-    const keys = Object.keys(headers).map(k => k.toLowerCase()).filter(k => isTencent ? (k === 'host' || k === 'content-type') : (k.startsWith('x-acs-') || k === 'host' || k === 'content-type')).sort();
+    const shouldIncludeInSignature = isTencent 
+        ? (k) => k === 'host' || k === 'content-type'
+        : (k) => k.startsWith('x-acs-') || k === 'host' || k === 'content-type';
+    const keys = Object.keys(headers).map(k => k.toLowerCase()).filter(shouldIncludeInSignature).sort();
     const canHeaders = keys.map(k => `${k}:${headers[k]}\n`).join('');
     const signedKeys = keys.join(';');
     const canReq = [method, "/", "", canHeaders, signedKeys, bodyHash].join('\n');

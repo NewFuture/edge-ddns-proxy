@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
  * 3. Signature follows TC3-HMAC-SHA256 algorithm with proper key derivation
  */
 
-// Mock crypto for testing
+// Use global crypto for testing
 const crypto = globalThis.crypto;
 
 async function sha256Hex(s) {
