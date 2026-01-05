@@ -13,13 +13,14 @@ test('tencent signing omits region header and uses TC3 signed headers', async ()
     };
 
     try {
-        const request = new Request('https://example.com/?hostname=test.example.com&ip=1.1.1.1&user=AKIDEXAMPLE123456789&password=secret');
+        const request = new Request('https://example.com/?hostname=test.example.com&ip=1.1.1.1&user=AKIDEXAMPLEFAKE000000&password=dummysecret');
         await handler.fetch(request);
 
         const firstHeaders = calls[0]?.options?.headers || {};
-        assert.ok(!('x-tc-region' in firstHeaders));
+        const normalized = Object.fromEntries(Object.entries(firstHeaders).map(([k, v]) => [k.toLowerCase(), v]));
+        assert.ok(!('x-tc-region' in normalized));
 
-        const auth = firstHeaders.Authorization || firstHeaders.authorization;
+        const auth = normalized.authorization;
         assert.ok(auth && auth.includes('SignedHeaders=content-type;host;x-tc-action'));
     } finally {
         global.fetch = originalFetch;
