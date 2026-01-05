@@ -399,9 +399,10 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
     if (isTencent) Object.assign(headers, { "x-tc-action": action, "x-tc-version": version, "x-tc-timestamp": ts.toString() });
     else Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce, "x-acs-content-sha256": bodyHash });
 
+    const lowerHeaderKeys = Object.keys(headers).map(k => k.toLowerCase());
     const signedHeaderKeys = isTencent
-        ? TENCENT_SIGNED_HEADERS.filter(k => k in headers)
-        : Object.keys(headers).map(k => k.toLowerCase()).filter(k => k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
+        ? TENCENT_SIGNED_HEADERS.filter(k => lowerHeaderKeys.includes(k))
+        : lowerHeaderKeys.filter(k => k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
     const canHeaders = signedHeaderKeys.map(k => `${k}:${headers[k]}\n`).join('');
     const signedKeys = signedHeaderKeys.join(';');
     const canReq = [method, "/", "", canHeaders, signedKeys, bodyHash].join('\n');
