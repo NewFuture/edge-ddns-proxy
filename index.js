@@ -9,7 +9,7 @@
 const CONFIG = {
     // Endpoints
     ali: { endpoint: "https://alidns.aliyuncs.com", version: "2015-01-09" },
-    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "" },
+    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23" },
     cloudflare: { endpoint: "https://api.cloudflare.com/client/v4" },
 
     // Default provider fallback ('ali', 'tencent', 'cloudflare', or null)
@@ -392,16 +392,16 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
     const dateDay = d.toISOString().split('T')[0];
     const nonce = Math.random().toString(36).slice(2);
 
-    const headers = { "host": host, "content-type": cType };
-    if (isTencent) Object.assign(headers, { "x-tc-action": action, "x-tc-version": version, "x-tc-timestamp": ts.toString(), "x-tc-region": CONFIG.tencent.region });
-    else Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce });
-
     const bodyHash = await sha256Hex(body);
-    if (!isTencent) headers["x-acs-content-sha256"] = bodyHash;
+    const headers = { "host": host, "content-type": cType };
+    if (isTencent) Object.assign(headers, { "x-tc-action": action, "x-tc-version": version, "x-tc-timestamp": ts.toString() });
+    else Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce, "x-acs-content-sha256": bodyHash });
 
-    const keys = Object.keys(headers).map(k => k.toLowerCase()).filter(k => isTencent || k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
-    const canHeaders = keys.map(k => `${k}:${headers[k]}\n`).join('');
-    const signedKeys = keys.join(';');
+    const signedHeaderKeys = isTencent
+        ? ["content-type", "host", "x-tc-action"]
+        : Object.keys(headers).map(k => k.toLowerCase()).filter(k => k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
+    const canHeaders = signedHeaderKeys.map(k => `${k}:${headers[k]}\n`).join('');
+    const signedKeys = signedHeaderKeys.join(';');
     const canReq = [method, "/", "", canHeaders, signedKeys, bodyHash].join('\n');
 
     let auth;
