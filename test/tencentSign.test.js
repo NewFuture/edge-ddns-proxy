@@ -2,6 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import handler from '../index.js';
 
+const TEST_TENCENT_ID = 'AKIDEXAMPLEFAKE000000';
+const TEST_TENCENT_KEY = 'dummysecret';
+const TEST_DOMAIN = 'test.example.com';
+
 test('tencent signing omits region header and uses TC3 signed headers', async () => {
     const originalFetch = global.fetch;
     const calls = [];
@@ -13,7 +17,7 @@ test('tencent signing omits region header and uses TC3 signed headers', async ()
     };
 
     try {
-        const request = new Request('https://example.com/?hostname=test.example.com&ip=1.1.1.1&user=AKIDEXAMPLEFAKE000000&password=dummysecret');
+        const request = new Request(`https://example.com/?hostname=${TEST_DOMAIN}&ip=1.1.1.1&user=${TEST_TENCENT_ID}&password=${TEST_TENCENT_KEY}`);
         await handler.fetch(request);
 
         const firstHeaders = calls[0]?.options?.headers || {};
