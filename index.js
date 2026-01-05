@@ -9,7 +9,7 @@
 const CONFIG = {
     // Endpoints
     ali: { endpoint: "https://alidns.aliyuncs.com", version: "2015-01-09" },
-    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "" },
+    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23" },
     cloudflare: { endpoint: "https://api.cloudflare.com/client/v4" },
 
     // Default provider fallback ('ali', 'tencent', 'cloudflare', or null)
@@ -434,7 +434,6 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
         headers["X-TC-Action"] = action;
         headers["X-TC-Version"] = version;
         headers["X-TC-Timestamp"] = ts.toString();
-        headers["X-TC-Region"] = CONFIG.tencent.region;
     }
     
     const res = await fetch(endpoint, { method, headers, body });
