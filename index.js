@@ -344,6 +344,8 @@ const MULTI_LEVEL_TLD_PARTS = [
     ["co", "jp"], ["ne", "jp"], ["or", "jp"], ["ac", "jp"], ["go", "jp"]
 ];
 
+const TENCENT_SIGNED_HEADERS = ["content-type", "host", "x-tc-action"];
+
 export function splitDomain(full) {
     const cleaned = full.replace(/\.$/, '');
     const parts = cleaned.split('.').filter(Boolean);
@@ -398,7 +400,7 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
     else Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce, "x-acs-content-sha256": bodyHash });
 
     const signedHeaderKeys = isTencent
-        ? ["content-type", "host", "x-tc-action"]
+        ? TENCENT_SIGNED_HEADERS
         : Object.keys(headers).map(k => k.toLowerCase()).filter(k => k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
     const canHeaders = signedHeaderKeys.map(k => `${k}:${headers[k]}\n`).join('');
     const signedKeys = signedHeaderKeys.join(';');
