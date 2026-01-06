@@ -1,8 +1,27 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { detectProvider } from '../index.js';
+import { detectProvider, normalizeTencentCredential } from '../index.js';
 
-test('detects tencent provider when id is numeric', () => {
+const akidPrefix = 'AKID';
+const compactId = '12345678901234567890123456789012'; // 32 chars
+const compactKey = 'abcdefghijklmnopqrstuvwx12345678'; // 32 chars
+const fullAkId = `${akidPrefix}${compactId}`;
+
+test('does not detect tencent when id is only numeric', () => {
     const provider = detectProvider('123456', 'abc123token');
+    assert.equal(provider, null);
+});
+
+test('detects tencent provider with full AKID prefix', () => {
+    const provider = detectProvider(fullAkId, compactKey);
     assert.equal(provider, 'tencent');
+});
+
+test('detects tencent provider and auto-completes compact credentials', () => {
+    const provider = detectProvider(compactId, compactKey);
+    assert.equal(provider, 'tencent');
+
+    const normalized = normalizeTencentCredential(compactId, compactKey);
+    assert.equal(normalized.id, fullAkId);
+    assert.equal(normalized.key, compactKey);
 });
