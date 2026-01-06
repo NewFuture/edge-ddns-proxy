@@ -9,7 +9,7 @@
 const CONFIG = {
     // Endpoints
     ali: { endpoint: "https://alidns.aliyuncs.com", version: "2015-01-09" },
-    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23", region: "" },
+    tencent: { endpoint: "https://dnspod.tencentcloudapi.com", version: "2021-03-23" },
     cloudflare: { endpoint: "https://api.cloudflare.com/client/v4" },
 
     // Default provider fallback ('ali', 'tencent', 'cloudflare', or null)
@@ -392,14 +392,23 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
     const dateDay = d.toISOString().split('T')[0];
     const nonce = Math.random().toString(36).slice(2);
 
+    // Headers for signature calculation
     const headers = { "host": host, "content-type": cType };
-    if (isTencent) Object.assign(headers, { "x-tc-action": action, "x-tc-version": version, "x-tc-timestamp": ts.toString(), "x-tc-region": CONFIG.tencent.region });
-    else Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce });
+    
+    // For Aliyun, add signing headers before signature
+    if (!isTencent) {
+        Object.assign(headers, { "x-acs-action": action, "x-acs-version": version, "x-acs-date": dateStr, "x-acs-signature-nonce": nonce });
+    }
 
     const bodyHash = await sha256Hex(body);
     if (!isTencent) headers["x-acs-content-sha256"] = bodyHash;
 
-    const keys = Object.keys(headers).map(k => k.toLowerCase()).filter(k => isTencent || k.startsWith('x-acs-') || k === 'host' || k === 'content-type').sort();
+    // For TencentCloud: only 'host' and 'content-type' are included in signature
+    // For Aliyun: include x-acs-* headers in signature
+    const shouldIncludeInSignature = isTencent 
+        ? (k) => k === 'host' || k === 'content-type'
+        : (k) => k.startsWith('x-acs-') || k === 'host' || k === 'content-type';
+    const keys = Object.keys(headers).map(k => k.toLowerCase()).filter(shouldIncludeInSignature).sort();
     const canHeaders = keys.map(k => `${k}:${headers[k]}\n`).join('');
     const signedKeys = keys.join(';');
     const canReq = [method, "/", "", canHeaders, signedKeys, bodyHash].join('\n');
@@ -418,6 +427,15 @@ async function signAndSendV3(endpoint, version, id, key, action, params, type) {
     }
 
     headers["Authorization"] = auth;
+    
+    // For TencentCloud: Add X-TC-* headers AFTER authorization is computed
+    // These headers must NOT be included in the signature
+    if (isTencent) {
+        headers["X-TC-Action"] = action;
+        headers["X-TC-Version"] = version;
+        headers["X-TC-Timestamp"] = ts.toString();
+    }
+    
     const res = await fetch(endpoint, { method, headers, body });
     const json = await res.json();
     if (!res.ok || (isTencent && json.Response?.Error)) throw new Error(JSON.stringify(json));
