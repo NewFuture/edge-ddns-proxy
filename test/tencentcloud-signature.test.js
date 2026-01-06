@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
  * 
  * Key requirements:
  * 1. Only 'host' and 'content-type' headers should be included in canonical request
- * 2. X-TC-* headers (Action, Version, Timestamp, Region) must be added AFTER signature
+ * 2. X-TC-* headers (Action, Version, Timestamp) must be added AFTER signature
  * 3. Signature follows TC3-HMAC-SHA256 algorithm with proper key derivation
  */
 
@@ -32,10 +32,6 @@ async function hmacRaw(k, s) {
     return await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(s));
 }
 
-async function hmacHex(k, s) {
-    const raw = await hmacRaw(k, s);
-    return Array.from(new Uint8Array(raw)).map(x => x.toString(16).padStart(2, '0')).join('');
-}
 
 test('TencentCloud signature should only include host and content-type in canonical headers', async () => {
     // Simulate the signature process

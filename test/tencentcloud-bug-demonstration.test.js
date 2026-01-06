@@ -70,6 +70,11 @@ test('Correct flow: X-TC headers added AFTER authorization', async () => {
     const signedKeys = keys.join(';');
     const canonicalRequest = ['POST', '/', '', canHeaders, signedKeys, bodyHash].join('\n');
     
+    // The canonical request must only include the signed headers (content-type and host)
+    assert.ok(canonicalRequest.includes('content-type'), 'Canonical request includes content-type header');
+    assert.ok(canonicalRequest.includes('host'), 'Canonical request includes host header');
+    assert.ok(!canonicalRequest.toLowerCase().includes('x-tc-'), 'Canonical request does not include any X-TC-* headers');
+    
     // Step 3: Create authorization header
     // (simplified - just checking the principle)
     const authorization = `TC3-HMAC-SHA256 Credential=AKID.../2024-01-01/dnspod/tc3_request, SignedHeaders=${signedKeys}, Signature=...`;
@@ -80,8 +85,7 @@ test('Correct flow: X-TC headers added AFTER authorization', async () => {
         "Authorization": authorization,
         "X-TC-Action": "DescribeRecordList",
         "X-TC-Version": "2021-03-23",
-        "X-TC-Timestamp": "1704067200",
-        "X-TC-Region": ""
+        "X-TC-Timestamp": "1704067200"
     };
     
     // Verify the authorization only references the original signed headers
