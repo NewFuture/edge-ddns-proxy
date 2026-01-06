@@ -237,23 +237,25 @@ export async function extractParams(request) {
     return { username, password, domain, ip, defaultProvider };
 }
 
+const TENCENT_FULL_ID_REGEX = /^AKID[a-zA-Z0-9]{32}$/;
+const TENCENT_COMPACT_REGEX = /^[a-zA-Z0-9]{32}$/;
+
 export function isTencentCompactCredential(id, key) {
-    return /^[a-zA-Z0-9]{32}$/.test(id || '') && key?.length === 32;
+    return TENCENT_COMPACT_REGEX.test(id || '') && TENCENT_COMPACT_REGEX.test(key || '');
 }
 
 export function detectProvider(id, key) {
+    const isCompact = isTencentCompactCredential(id, key);
     if (!id && !key) return null;
     if (/^LTAI[a-zA-Z0-9]{10,}/.test(id)) return "ali";
-    if (/^AKID[a-zA-Z0-9]{32}$/.test(id)) return "tencent";
-    if ((key && key.length >= 30) || (id && id.length >= 30)) {
-        if (!isTencentCompactCredential(id, key)) return "cloudflare";
-    }
-    if (isTencentCompactCredential(id, key)) return "tencent";
+    if (TENCENT_FULL_ID_REGEX.test(id)) return "tencent";
+    if (!isCompact && ((key && key.length >= 30) || (id && id.length >= 30))) return "cloudflare";
+    if (isCompact) return "tencent";
     return null;
 }
 
 export function normalizeTencentCredential(id, key) {
-    if (/^AKID[a-zA-Z0-9]{32}$/.test(id)) return { id, key };
+    if (TENCENT_FULL_ID_REGEX.test(id)) return { id, key };
     if (isTencentCompactCredential(id, key)) return { id: `AKID${id}`, key };
     return { id, key };
 }
