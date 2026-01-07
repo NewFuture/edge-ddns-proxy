@@ -249,7 +249,7 @@ export function detectProvider(id, key) {
     if (/^LTAI[a-zA-Z0-9]{10,}/.test(id)) return "ali";
     if (TENCENT_FULL_ID_REGEX.test(id)) return "tencent";
     const isCompact = isTencentCompactCredential(id, key);
-    const isCloudflareAccount = !id || /^(cf|cloudfare)$/i.test(id);
+    const isCloudflareAccount = !id || /^(cf|cloudflare)$/i.test(id);
     if (!isCompact && isCloudflareAccount && ((key && key.length >= 30) || (id && id.length >= 30))) return "cloudflare";
     if (isCompact) return "tencent";
     return null;

@@ -92,7 +92,7 @@ DDNS 服务器：edge-ddns-proxy.edge-platform.com
 
 - **阿里云 DNS**：用户名填 AccessKeyId（形如 `LTAI...`），密码填 AccessKeySecret。
 - **腾讯云 DNS（DNSPod）**：用户名填 `AKID` 开头的 36 位 ID，或去掉 `AKID` 前缀的 32 位字母数字；密码填与之配对的 32 位密钥。
-- **Cloudflare**：用户名请留空或填写 `cf` / `cloudfare`，密码填写 API Token（至少 30 位）。无需填写邮箱，默认自动查询 Zone ID。
+- **Cloudflare**：用户名请留空或填写 `cf` / `cloudflare`，密码填写 API Token（至少 30 位）。无需填写邮箱，默认自动查询 Zone ID。
 
 ### 🔒 安全性说明
 

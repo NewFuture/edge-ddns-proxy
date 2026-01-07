@@ -92,7 +92,7 @@ Password: your-api-token
 
 - **Alibaba Cloud DNS**: Username = AccessKeyId (e.g., `LTAI...`); Password = AccessKeySecret.
 - **Tencent Cloud DNS (DNSPod)**: Username = `AKID` + 32 alphanumerics, or the 32-character compact form without `AKID` (auto-prefixed); Password = matching 32-character secret.
-- **Cloudflare**: Username should be empty or `cf` / `cloudfare`; Password = API Token (30+ chars). Email is not required; Zone ID is auto-discovered.
+- **Cloudflare**: Username should be empty or `cf` / `cloudflare`; Password = API Token (30+ chars). Email is not required; Zone ID is auto-discovered.
 
 ### 🔒 Security Notes
 
