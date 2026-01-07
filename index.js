@@ -56,6 +56,12 @@ export default {
                 return createDDNSResponse(request, 'AUTH_FAIL'); // 401
             }
 
+            let accessId = username;
+            let accessKey = password;
+            if (provider === "tencent") {
+                ({ id: accessId, key: accessKey } = normalizeTencentCredential(username, password));
+            }
+
             // 4. KV 缓存检查
             const cacheKey = `DDNS:${provider}:${domain}`;
             // 兼容 Cloudflare (env.KV) 和 ESA/EdgeOne (全局对象或 env)
@@ -75,13 +81,13 @@ export default {
             try {
                 switch (provider) {
                     case "ali":
-                        result = await handleAliyun(username, password, domain, ip);
+                        result = await handleAliyun(accessId, accessKey, domain, ip);
                         break;
                     case "tencent":
-                        result = await handleTencent(username, password, domain, ip);
+                        result = await handleTencent(accessId, accessKey, domain, ip);
                         break;
                     case "cloudflare":
-                        const token = password || username;
+                        const token = accessKey || accessId;
                         result = await handleCloudflare(null, token, domain, ip);
                         break;
                     default:
@@ -231,12 +237,28 @@ export async function extractParams(request) {
     return { username, password, domain, ip, defaultProvider };
 }
 
+const TENCENT_FULL_ID_REGEX = /^AKID[a-zA-Z0-9]{32}$/;
+const TENCENT_COMPACT_REGEX = /^[a-zA-Z0-9]{32}$/;
+
+export function isTencentCompactCredential(id, key) {
+    return TENCENT_COMPACT_REGEX.test(id || '') && TENCENT_COMPACT_REGEX.test(key || '');
+}
+
 export function detectProvider(id, key) {
     if (!id && !key) return null;
     if (/^LTAI[a-zA-Z0-9]{10,}/.test(id)) return "ali";
-    if (/^AKID[a-zA-Z0-9]{10,}/.test(id) || /^\d{5,}$/.test(id)) return "tencent";
-    if ((key && key.length >= 30) || (id && id.length >= 30)) return "cloudflare";
+    if (TENCENT_FULL_ID_REGEX.test(id)) return "tencent";
+    const isCompact = isTencentCompactCredential(id, key);
+    const isCloudflareAccount = !id || /^(cf|cloudflare)$/i.test(id);
+    if (!isCompact && isCloudflareAccount) return "cloudflare";
+    if (isCompact) return "tencent";
     return null;
+}
+
+export function normalizeTencentCredential(id, key) {
+    if (TENCENT_FULL_ID_REGEX.test(id)) return { id, key };
+    if (isTencentCompactCredential(id, key)) return { id: `AKID${id}`, key };
+    return { id, key };
 }
 
 /**
