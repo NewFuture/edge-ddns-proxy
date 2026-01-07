@@ -245,10 +245,10 @@ export function isTencentCompactCredential(id, key) {
 }
 
 export function detectProvider(id, key) {
-    const isCompact = isTencentCompactCredential(id, key);
     if (!id && !key) return null;
     if (/^LTAI[a-zA-Z0-9]{10,}/.test(id)) return "ali";
     if (TENCENT_FULL_ID_REGEX.test(id)) return "tencent";
+    const isCompact = isTencentCompactCredential(id, key);
     if (!isCompact && ((key && key.length >= 30) || (id && id.length >= 30))) return "cloudflare";
     if (isCompact) return "tencent";
     return null;
