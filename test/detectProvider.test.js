@@ -25,3 +25,10 @@ test('detects tencent provider and auto-completes compact credentials', () => {
     assert.equal(normalized.id, fullAkId);
     assert.equal(normalized.key, compactKey);
 });
+
+test('detects cloudflare only with allowed account placeholders', () => {
+    assert.equal(detectProvider('cf', 'a'.repeat(30)), 'cloudflare');
+    assert.equal(detectProvider('cloudfare', 'a'.repeat(30)), 'cloudflare');
+    assert.equal(detectProvider('', 'a'.repeat(30)), 'cloudflare');
+    assert.equal(detectProvider('wrong', 'a'.repeat(30)), null);
+});
