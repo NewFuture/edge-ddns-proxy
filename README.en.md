@@ -116,6 +116,100 @@ Password: your-api-token
 
 ---
 
+## 🚢 Deployment Guide
+
+### Alibaba Cloud ESA Function Deployment
+
+#### Method 1: Manual Code Paste Deployment
+
+1. **Log in to Alibaba Cloud ESA Console**
+   - Visit [Alibaba Cloud ESA Console](https://esa.console.aliyun.com/)
+   - Navigate to **Edge Functions** > **Function Management**
+
+2. **Create New Function**
+   - Click **Create Function**
+   - Select **Create from Scratch**
+   - Function Name: `edge-ddns-proxy` (or custom name)
+
+3. **Configure Function Code**
+   - In the code editor, delete the default code
+   - Copy the contents of [`index.js`](./index.js) from this repository
+   - Paste into the code editor
+
+4. **Configure Environment Variables (Optional)**
+   - Click the **Environment Variables** tab
+   - Add environment variables:
+     - `ALLOWED_SUFFIX`: Allowed domain suffixes (comma-separated), e.g., `.example.com,.newfuture.cc`
+     - `DDNS_KV`: KV namespace binding (for caching, optional)
+
+5. **Save and Publish**
+   - Click **Save**
+   - Click **Publish** to deploy the function to production
+
+6. **Configure Routes**
+   - In **Route Management**, add routing rules
+   - Match condition: e.g., `/*` or specific path
+   - Bind to the newly created function
+
+7. **Get Access URL**
+   - View the assigned edge function domain in function details
+   - Or bind a custom domain
+
+#### Method 2: GitHub Repository Auto-Deployment
+
+1. **Prepare GitHub Repository**
+   - Fork this repository: https://github.com/NewFuture/edge-ddns-proxy
+   - Or use your own repository
+
+2. **Log in to Alibaba Cloud ESA Console**
+   - Visit [Alibaba Cloud ESA Console](https://esa.console.aliyun.com/)
+   - Navigate to **Edge Functions** > **Function Management**
+
+3. **Create New Function and Link GitHub**
+   - Click **Create Function**
+   - Select **Import from GitHub**
+   - First-time users need to click **Link GitHub Account** and authorize
+
+4. **Select Repository and Branch**
+   - After successful authorization, select your repository
+   - Select deployment branch (usually `main` or `master`)
+
+5. **Configure Build Settings**
+   - **Entry file**: `./index.js` (or defined in `esa.jsonc`)
+   - **Root directory**: Keep default `/`
+   - **Build command**: Leave empty (this project requires no build)
+   - **Environment Variables**:
+     - `ALLOWED_SUFFIX`: Allowed domain suffixes (optional)
+
+6. **Save and Deploy**
+   - Click **Save and Deploy**
+   - ESA will automatically pull code from GitHub and deploy
+
+7. **Auto-Sync**
+   - Each push to the specified branch triggers automatic redeployment
+   - View deployment status in deployment history
+
+8. **Configure Routes and Domains**
+   - Configure routing rules in **Route Management**
+   - Bind custom domain (optional)
+
+#### Post-Deployment Configuration
+
+After deployment, you'll receive an edge function access URL, for example:
+```
+https://your-function.esa-cn-shenzhen.fcapp.run
+```
+
+Use this address in your router's DDNS settings:
+```
+DDNS Server: your-function.esa-cn-shenzhen.fcapp.run
+Username: <Your DNS Provider AccessKey>
+Password: <Your DNS Provider SecretKey>
+Hostname: yourdomain.com
+```
+
+---
+
 ## 📄 License
 
 This project is open-sourced under the [Apache License](LICENSE).
