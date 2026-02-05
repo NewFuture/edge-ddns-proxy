@@ -6,7 +6,7 @@
 - `export default { fetch }`：边缘函数入口，完成参数解析、厂商识别、缓存检查和结果返回。
 - `createDDNSResponse`：根据 DynDNS / EasyDNS 协议格式返回对应的 HTTP 状态码和响应体。
 - `extractParams`：支持 Basic Auth 与查询参数（`user|username`、`pass|password`、`hostname|domain|host_id|host|id`、`myip|ip|addr`），并从多种头部获取访问者 IP。
-- `detectProvider`：按凭据模式推断厂商（阿里云 AccessKey、腾讯云 AKID 或至少 10 位的纯数字 ID、Cloudflare Token），否则回退到 `defaultProvider` 或 `CONFIG.DEFAULT_PROVIDER`。
+- `detectProvider`：按凭据模式推断厂商（阿里云 AccessKey、腾讯云 AKID/紧凑型 32 位 ID 自动补全、Cloudflare Token），否则回退到 `defaultProvider` 或 `CONFIG.DEFAULT_PROVIDER`。
 - `handleAliyun / handleTencent / handleCloudflare`：分别调用对应 DNS API，按 A/AAAA 类型创建或更新记录。
 - `CONFIG.CACHE_TTL`：成功时将 IP 写入 `DDNS_KV`，300 秒（5 分钟）内重复请求直接返回 `skipped`。
 
